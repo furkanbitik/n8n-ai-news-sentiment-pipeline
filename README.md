@@ -9,7 +9,7 @@ Built with **n8n** running on **Docker**, this agent acts as a decision support 
 
 ## 🛠️ Tech Stack
 * **Orchestration:** [n8n](https://n8n.io/) (Self-hosted via Docker)
-* **AI Engine:** Google Gemini 1.5 Flash API
+* **AI Engine:** Google Gemini 2.5 Flash API
 * **Data Source:** RSS Feeds (Dynamic Ingestion)
 * **Containerization:** Docker Desktop
 * **Output:** Structured .XLSX Reports
