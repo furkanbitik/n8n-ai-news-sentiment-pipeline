@@ -28,7 +28,7 @@
     },
     {
       "parameters": {
-        "maxItems": 5
+        "maxItems": 30
       },
       "type": "n8n-nodes-base.limit",
       "typeVersion": 1,
@@ -41,45 +41,13 @@
     },
     {
       "parameters": {
-        "modelId": {
-          "__rl": true,
-          "value": "models/gemini-2.5-flash",
-          "mode": "list",
-          "cachedResultName": "models/gemini-2.5-flash"
-        },
-        "messages": {
-          "values": [
-            {
-              "content": "=Aşağıdaki haber başlığını finansal ve teknolojik açıdan analiz et. Yorum yapma. Sadece şu üç kelimeden birini çıktı olarak ver: 'OLUMLU', 'OLUMSUZ', 'NÖTR'. Haber Başlığı: {{ $json.title }}"
-            }
-          ]
-        },
-        "options": {}
-      },
-      "type": "@n8n/n8n-nodes-langchain.googleGemini",
-      "typeVersion": 1,
-      "position": [
-        624,
-        0
-      ],
-      "id": "9b750aec-e95f-4e2d-bd1f-e06e0c581ea8",
-      "name": "Message a model",
-      "credentials": {
-        "googlePalmApi": {
-          "id": "TLDTZGYDeFlfvuLx",
-          "name": "Google Gemini(PaLM) Api account"
-        }
-      }
-    },
-    {
-      "parameters": {
         "operation": "xlsx",
         "options": {}
       },
       "type": "n8n-nodes-base.convertToFile",
       "typeVersion": 1.1,
       "position": [
-        1184,
+        1248,
         0
       ],
       "id": "f53547e7-10af-447e-b71a-e16d7dea926b",
@@ -98,7 +66,7 @@
             {
               "id": "4da550dd-34b3-4305-9c1f-3bf57af9b724",
               "name": "Analiz",
-              "value": "={{ $json.content.parts[0].text }}",
+              "value": "={{ $json.output[0].content[0].text }}",
               "type": "string"
             }
           ]
@@ -108,11 +76,46 @@
       "type": "n8n-nodes-base.set",
       "typeVersion": 3.4,
       "position": [
-        976,
+        992,
         0
       ],
       "id": "639b2686-ad13-4353-93f9-10d979b667f6",
       "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "llama-3.3-70b-versatile",
+          "mode": "list",
+          "cachedResultName": "LLAMA-3.3-70B-VERSATILE"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "=Aşağıdaki haber başlığını finansal ve teknolojik açıdan analiz et. Yorum yapma. Sadece şu üç kelimeden birini çıktı olarak ver: 'OLUMLU','OLUMSUZ', 'NÖTR'. Haber Başlığı:{{ $json.title }}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "store": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "2df313db-f000-4a3f-9b37-d19ace3670d1",
+      "name": "Message a model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "AMgvlJZActL8Mi0K",
+          "name": "OpenAi account"
+        }
+      }
     }
   ],
   "pinData": {},
@@ -143,18 +146,7 @@
       "main": [
         [
           {
-            "node": "Message a model",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Message a model": {
-      "main": [
-        [
-          {
-            "node": "Edit Fields",
+            "node": "Message a model1",
             "type": "main",
             "index": 0
           }
@@ -171,13 +163,24 @@
           }
         ]
       ]
+    },
+    "Message a model1": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "15343313-3285-4cc2-8f6a-065782675931",
+  "versionId": "38587bec-d211-4726-9c62-191dbce8fa81",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "9e521a782bc908927e20eafa1ef35a8bf0d3f809c320699df9fc3dba2d00b7ae"
