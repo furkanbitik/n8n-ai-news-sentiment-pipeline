@@ -1,0 +1,187 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "19cf7970-139f-421b-aadb-361e622515fe",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "url": "https://www.donanimhaber.com/rss/tum/",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "91179a66-55a1-47d4-a466-61273a69666b",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "maxItems": 5
+      },
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "dfdd45a6-133a-4cdd-862c-034c1cb643d3",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=Aşağıdaki haber başlığını finansal ve teknolojik açıdan analiz et. Yorum yapma. Sadece şu üç kelimeden birini çıktı olarak ver: 'OLUMLU', 'OLUMSUZ', 'NÖTR'. Haber Başlığı: {{ $json.title }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1,
+      "position": [
+        624,
+        0
+      ],
+      "id": "9b750aec-e95f-4e2d-bd1f-e06e0c581ea8",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "TLDTZGYDeFlfvuLx",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "xlsx",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        1184,
+        0
+      ],
+      "id": "f53547e7-10af-447e-b71a-e16d7dea926b",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "d5c7a283-fab4-45f2-9acb-54d94c4b71d1",
+              "name": "Haber Basligi",
+              "value": "={{ $('RSS Read').item.json.title }}",
+              "type": "string"
+            },
+            {
+              "id": "4da550dd-34b3-4305-9c1f-3bf57af9b724",
+              "name": "Analiz",
+              "value": "={{ $json.content.parts[0].text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        976,
+        0
+      ],
+      "id": "639b2686-ad13-4353-93f9-10d979b667f6",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "15343313-3285-4cc2-8f6a-065782675931",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "9e521a782bc908927e20eafa1ef35a8bf0d3f809c320699df9fc3dba2d00b7ae"
+  },
+  "id": "hn2onZPcWO67U8xi",
+  "tags": []
+}
